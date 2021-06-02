@@ -1,0 +1,23 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Remote Control</title>
+  <link rel="stylesheet" href="main.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+  <div class="grid">
+  {% for item in items %}
+    <button class="item" data-command="{{item.command}}">
+      {{item.text}}
+    </button>
+  {% endfor %}
+  </div>
+  <script src="static/main.js">
+  </script>
+</body>
+</html>

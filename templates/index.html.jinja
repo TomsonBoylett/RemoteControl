@@ -7,10 +7,11 @@
   <title>Remote Control - {{ page }}</title>
   <link rel="stylesheet" href="/main.css">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/ico" href="/static/favicon.ico">
 </head>
 
 <body>
-  <div class="grid">
+  <div id="grid">
   {% for item in items %}
     <a class="item button"
         {% if item.href %}href="{{item.href}}"{% endif %}

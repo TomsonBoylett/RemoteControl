@@ -4,20 +4,22 @@
 <head>
   <meta charset="utf-8">
 
-  <title>Remote Control</title>
-  <link rel="stylesheet" href="main.css">
+  <title>Remote Control - {{ page }}</title>
+  <link rel="stylesheet" href="/main.css">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
   <div class="grid">
   {% for item in items %}
-    <button class="item" data-command="{{item.command}}">
+    <a class="item button"
+        {% if item.href %}href="{{item.href}}"{% endif %}
+        {% if item.command %}data-command="{{item.command}}"{% endif %}>
       {{item.text}}
-    </button>
+    </a>
   {% endfor %}
   </div>
-  <script src="static/main.js">
+  <script src="/static/main.js">
   </script>
 </body>
 </html>

@@ -4,7 +4,7 @@ import sys
 
 from starlette.applications import Starlette
 from starlette.endpoints import WebSocketEndpoint
-from starlette.responses import HTMLResponse, JSONResponse
+from starlette.responses import PlainTextResponse
 from starlette.routing import Route, WebSocketRoute, Mount
 from starlette.templating import Jinja2Templates
 from starlette.staticfiles import StaticFiles
@@ -16,7 +16,8 @@ import config
 LOGGER = logging.getLogger(__name__)
 
 templates = Jinja2Templates(directory='templates')
-key_pattern = re.compile(r'^({enter}|{backspace}|[ -~])$', re.IGNORECASE)
+key_pattern = '|'.join(re.escape(k) for k in pyautogui.KEY_NAMES)
+key_pattern = re.compile(r'^({(' + key_pattern + r')}|[ -~])$', re.IGNORECASE)
 
 class CommandError(Exception):
     pass
@@ -49,10 +50,16 @@ class RemoteControl(WebSocketEndpoint):
             await websocket.send_text(str(e))
 
 async def homepage(request):
+    page = request.path_params.get('page', 'Main')
+
+    if page not in config.PAGES:
+        return PlainTextResponse("Not Found", status_code=404)
+
     return templates.TemplateResponse('index.html.jinja', {
         'columns': config.COLUMNS,
         'rows': config.ROWS,
-        'items': config.ITEMS,
+        'page':  page,
+        'items': config.PAGES[page],
         'request': request
     })
 
@@ -65,6 +72,7 @@ async def css(request):
 
 app = Starlette(debug=True, routes=[
     Route('/', homepage),
+    Route('/page/{page}', homepage),
     Route('/main.css', css),
     Mount('/static', app=StaticFiles(directory='static'), name='static'),
     WebSocketRoute('/ws', RemoteControl)

@@ -1,10 +1,6 @@
 COLUMNS = 4
 ROWS = 8
 
-PROGRAMS = {
-    'NextPVR': '"C:\\Program Files\\NextPVR\\client\\NextPVR.exe"'
-}
-
 PAGES = {
     'Main': [
         {
@@ -43,7 +39,7 @@ PAGES = {
         },
         {
             'text': 'Launch NextPVR',
-            'command': 'lNextPVR'
+            'command': 'l"C:\\Program Files\\NextPVR\\client\\NextPVR.exe"'
         },
         {
             'text': 'Recordings',

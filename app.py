@@ -41,7 +41,6 @@ def press_hotkey(keys):
 
 def launch_program(program):
     try:
-        program = config.PROGRAMS[program]
         args = shlex.split(program)
         subprocess.Popen(args)
     except KeyError as e:
@@ -57,11 +56,11 @@ class RemoteControl(WebSocketEndpoint):
 
     async def on_receive(self, websocket, data):
         try:
-            ws_commands[data[0]](data[1:])
-        except IndexError:
-            await websocket.send_text(f'No command provided')
-        except KeyError as e:
-            await websocket.send_text(f'Invalid command {str(e)}')
+            page, item_index = data.split(',')
+            command = config.PAGES[page][int(item_index)]['command']
+            ws_commands[command[0]](command[1:])
+        except (KeyError, IndexError, ValueError) as e:
+            await websocket.send_text(f'Invalid command: {str(e)}')
         except CommandError as e:
             await websocket.send_text(str(e))
 

@@ -9,7 +9,9 @@ window.addEventListener("load", () => {
     for (item of items) {
         item.addEventListener(event_type, (event) => {
             let command = event.target.dataset.command;
-            ws.send(command)
+            if (command) {
+                ws.send(command);
+            }
         });
     }
 

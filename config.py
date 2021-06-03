@@ -8,28 +8,10 @@ PAGES = {
             'href': '/page/NextPVR'
         },
         {
-            'text': 'A',
-            'command': 'ka'
-        },
-        {
-            'text': 'Enter',
-            'command': 'k{enter}'
-        },
-        {
-            'text': 'A',
-            'command': 'ka'
-        },
-        {
-            'text': 'Enter',
-            'command': 'k{enter}'
-        },
-        {
-            'text': 'A',
-            'command': 'ka'
-        },
-        {
-            'text': 'Enter',
-            'command': 'k{enter}'
+            'text': 'Shutdown',
+            'command': 'lshutdown.exe /s',
+            'column': 4,
+            'row': 8
         }
     ],
     'NextPVR': [

@@ -3,6 +3,7 @@ import logging
 import sys
 import shlex
 import subprocess
+import os
 
 from starlette.applications import Starlette
 from starlette.endpoints import WebSocketEndpoint
@@ -18,7 +19,17 @@ import config
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.DEBUG)
 
-templates = Jinja2Templates(directory='templates')
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath('.')
+
+    return os.path.join(base_path, relative_path)
+
+templates = Jinja2Templates(directory=resource_path('templates'))
 key_pattern = '|'.join(re.escape(k) for k in pyautogui.KEY_NAMES)
 key_pattern = re.compile(r'{(' + key_pattern + r')}|[ -~]', re.IGNORECASE)
 
@@ -89,7 +100,7 @@ app = Starlette(debug=True, routes=[
     Route('/', homepage),
     Route('/page/{page}', homepage),
     Route('/main.css', css),
-    Mount('/static', app=StaticFiles(directory='static'), name='static'),
+    Mount('/static', app=StaticFiles(directory=resource_path('static')), name='static'),
     WebSocketRoute('/ws', RemoteControl)
 ])
 

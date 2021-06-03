@@ -1,0 +1,100 @@
+bind_address = "0.0.0.0"
+port = 8000
+
+# How many slots to show on each page
+columns = 4
+rows = 8
+
+# This section defines the buttons to display on each page
+# All buttons must have a text field
+# Buttons can have either an href field or a command field
+# The href field is used to link to another page
+# The command field is used to execute an action on the server
+
+# Available Commands:
+
+# l#path_to_executable_with_optional_args#
+# Launches a program. " and \ must be escaped
+
+# k#keys_to_press#
+# Simulates pressing a single key or a hotkey
+# To send special keys, surround them with {}
+# Eg ka presses the a key
+# Eg k{enter} presses the enter key
+# Eg k{ctrl}c presses CTRL + C 
+
+[[pages.Main]]
+text = "NextPVR"
+href = "/page/NextPVR"
+
+[[pages.Main]]
+text = "Shutdown"
+command = "lshutdown.exe /s"
+column = 4
+row = 8
+
+[[pages.NextPVR]]
+text = "Back"
+href = "/"
+
+[[pages.NextPVR]]
+text = "Launch NextPVR"
+command = "l\"C:\\Program Files\\NextPVR\\client\\NextPVR.exe\""
+
+[[pages.NextPVR]]
+text = "Recordings"
+command = "k{f8}"
+
+[[pages.NextPVR]]
+text = "Esc"
+command = "k{esc}"
+column = 2
+row = 6
+
+[[pages.NextPVR]]
+text = "Up"
+command = "k{up}"
+column = 3
+row = 6
+
+[[pages.NextPVR]]
+text = "Subtitles"
+command = "kx"
+column = 4
+row = 6
+
+[[pages.NextPVR]]
+text = "Left"
+command = "k{left}"
+column = 2
+row = 7
+
+[[pages.NextPVR]]
+text = "Enter"
+command = "k{enter}"
+column = 3
+row = 7
+
+[[pages.NextPVR]]
+text = "Right"
+command = "k{right}"
+column = 4
+row = 7
+
+[[pages.NextPVR]]
+text = "Guide"
+command = "k{f1}"
+column = 2
+row = 8
+
+[[pages.NextPVR]]
+text = "Down"
+command = "k{down}"
+column = 3
+row = 8
+
+[[pages.NextPVR]]
+text = "Play/Pause"
+command = "k{playpause}"
+column = 4
+row = 8

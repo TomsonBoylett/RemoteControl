@@ -13,8 +13,7 @@ from starlette.templating import Jinja2Templates
 from starlette.staticfiles import StaticFiles
 import uvicorn
 import pyautogui
-
-import config
+import toml
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.DEBUG)
@@ -28,6 +27,8 @@ def resource_path(relative_path):
         base_path = os.path.abspath('.')
 
     return os.path.join(base_path, relative_path)
+
+config = toml.load('config.toml')
 
 templates = Jinja2Templates(directory=resource_path('templates'))
 key_pattern = '|'.join(re.escape(k) for k in pyautogui.KEY_NAMES)
@@ -68,7 +69,7 @@ class RemoteControl(WebSocketEndpoint):
     async def on_receive(self, websocket, data):
         try:
             page, item_index = data.split(',')
-            command = config.PAGES[page][int(item_index)]['command']
+            command = config['pages'][page][int(item_index)]['command']
             ws_commands[command[0]](command[1:])
         except (KeyError, IndexError, ValueError) as e:
             await websocket.send_text(f'Invalid command: {str(e)}')
@@ -78,21 +79,21 @@ class RemoteControl(WebSocketEndpoint):
 async def homepage(request):
     page = request.path_params.get('page', 'Main')
 
-    if page not in config.PAGES:
+    if page not in config['pages']:
         return PlainTextResponse("Not Found", status_code=404)
 
     return templates.TemplateResponse('index.html.jinja', {
-        'columns': config.COLUMNS,
-        'rows': config.ROWS,
+        'columns': config['columns'],
+        'rows': config['rows'],
         'page':  page,
-        'items': config.PAGES[page],
+        'items': config['pages'][page],
         'request': request
     })
 
 async def css(request):
     return templates.TemplateResponse('main.css.jinja', media_type='text/css', context={
-        'columns': config.COLUMNS,
-        'rows': config.ROWS,
+        'columns': config['columns'],
+        'rows': config['rows'],
         'request': request
     })
 
@@ -106,4 +107,4 @@ app = Starlette(debug=True, routes=[
 
 if __name__ == "__main__":
     logging.basicConfig(stream=sys.stdout)
-    uvicorn.run(app, host='0.0.0.0', port=8000)
+    uvicorn.run(app, host=config['bind_address'], port=config['port'])

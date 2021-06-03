@@ -15,7 +15,13 @@
   {% for item in items %}
     <a class="item button"
         {% if item.href %}href="{{item.href}}"{% endif %}
-        {% if item.command %}data-command="{{item.command}}"{% endif %}>
+        {% if item.command %}data-command="{{item.command}}"{% endif %}
+        style="
+          {% if item.column %}grid-column-start: {{ item.column }};{% endif %}
+          {% if item.row %}grid-row-start: {{ item.row }};{% endif %}
+          {% if item.column_span %}grid-column-end: span {{ item.column_span }};{% endif %}
+          {% if item.row_span %}grid-row-end: span {{ item.row_span }};{% endif %}
+        ">
       {{item.text}}
     </a>
   {% endfor %}

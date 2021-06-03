@@ -50,107 +50,58 @@ PAGES = {
             'command': 'k{f8}'
         },
         {
-            'text': ''
-        },
-        
-        {
-            'text': ''
-        },
-        {
-            'text': ''
-        },
-        {
-            'text': ''
-        },
-        {
-            'text': ''
-        },
-
-        {
-            'text': ''
-        },
-        {
-            'text': ''
-        },
-        {
-            'text': ''
-        },
-        {
-            'text': ''
-        },
-
-        {
-            'text': ''
-        },
-        {
-            'text': ''
-        },
-        {
-            'text': ''
-        },
-        {
-            'text': ''
-        },
-
-        {
-            'text': ''
-        },
-        {
-            'text': ''
-        },
-        {
-            'text': ''
-        },
-        {
-            'text': ''
-        },
-
-        {
-            'text': ''
-        },
-        {
             'text': 'Esc',
-            'command': 'k{esc}'
+            'command': 'k{esc}',
+            'column': 2,
+            'row': 6
         },
         {
             'text': 'Up',
-            'command': 'k{up}'
+            'command': 'k{up}',
+            'column': 3,
+            'row': 6
         },
         {
             'text': 'Subtitles',
-            'command': 'kx'
-        },
-
-        {
-            'text': ''
+            'command': 'kx',
+            'column': 4,
+            'row': 6
         },
         {
             'text': 'Left',
-            'command': 'k{left}'
+            'command': 'k{left}',
+            'column': 2,
+            'row': 7
         },
         {
             'text': 'Enter',
-            'command': 'k{enter}'
+            'command': 'k{enter}',
+            'column': 3,
+            'row': 7
         },
         {
             'text': 'Right',
-            'command': 'k{right}'
-        },
-
-        {
-            'text': ''
+            'command': 'k{right}',
+            'column': 4,
+            'row': 7
         },
         {
             'text': 'Guide',
-            'command': 'k{f1}'
+            'command': 'k{f1}',
+            'column': 2,
+            'row': 8
         },
         {
             'text': 'Down',
-            'command': 'k{down}'
+            'command': 'k{down}',
+            'column': 3,
+            'row': 8
         },
         {
             'text': 'Play/Pause',
-            'command': 'k{playpause}'
+            'command': 'k{playpause}',
+            'column': 4,
+            'row': 8
         },
     ]
 }

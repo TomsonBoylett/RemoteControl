@@ -16,25 +16,28 @@ import pyautogui
 import config
 
 LOGGER = logging.getLogger(__name__)
+LOGGER.setLevel(logging.DEBUG)
 
 templates = Jinja2Templates(directory='templates')
 key_pattern = '|'.join(re.escape(k) for k in pyautogui.KEY_NAMES)
-key_pattern = re.compile(r'^({(' + key_pattern + r')}|[ -~])$', re.IGNORECASE)
+key_pattern = re.compile(r'{(' + key_pattern + r')}|[ -~]', re.IGNORECASE)
 
 class CommandError(Exception):
     pass
 
-def press_key(key):
-    if not key_pattern.match(key):
-        raise CommandError(f'Invalid key: {key}')
+def press_hotkey(keys):
+    tokens = list(key_pattern.finditer(keys))
+
+    # Make sure entire string is matched
+    if sum(t.end() - t.start() for t in tokens) != len(keys):
+        raise CommandError(f'Invalid hotkey: {keys}')
+
+    tokens = [t.group() for t in tokens]
+    keys = [t[1:-1] if t[0] == '{' else t for t in tokens]
+
+    pyautogui.hotkey(*keys)
     
-    if key[0] != '{':
-        pyautogui.write(key)
-    else:
-        key = key[1:-1]
-        pyautogui.press(key)
-    
-    LOGGER.debug(f'Key: {key}')
+    LOGGER.debug(f'Executed Hotkey: {keys}')
 
 def launch_program(program):
     try:
@@ -45,7 +48,7 @@ def launch_program(program):
         raise CommandError(f'Invalid program {str(e)}')
 
 ws_commands = {
-    'k': press_key,
+    'k': press_hotkey,
     'l': launch_program
 }
 

@@ -1,6 +1,8 @@
 import re
 import logging
 import sys
+import shlex
+import subprocess
 
 from starlette.applications import Starlette
 from starlette.endpoints import WebSocketEndpoint
@@ -34,8 +36,17 @@ def press_key(key):
     
     LOGGER.debug(f'Key: {key}')
 
+def launch_program(program):
+    try:
+        program = config.PROGRAMS[program]
+        args = shlex.split(program)
+        subprocess.Popen(args)
+    except KeyError as e:
+        raise CommandError(f'Invalid program {str(e)}')
+
 ws_commands = {
-    'k': press_key
+    'k': press_key,
+    'l': launch_program
 }
 
 class RemoteControl(WebSocketEndpoint):
@@ -44,6 +55,8 @@ class RemoteControl(WebSocketEndpoint):
     async def on_receive(self, websocket, data):
         try:
             ws_commands[data[0]](data[1:])
+        except IndexError:
+            await websocket.send_text(f'No command provided')
         except KeyError as e:
             await websocket.send_text(f'Invalid command {str(e)}')
         except CommandError as e:

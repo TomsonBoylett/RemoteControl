@@ -10,6 +10,7 @@ window.addEventListener("load", () => {
         let command = item.dataset.command;
         if (command) {
             item.addEventListener(event_type, () => {
+                window.navigator.vibrate(10);
                 ws.send(command); 
             });
         }
@@ -100,6 +101,7 @@ function setupKeyboard() {
     }
 
     function onKeyPress(button) {
+        window.navigator.vibrate(10);
         if (button in layout_buttons) {
             let currentLayout = keyboard.options.layoutName;
             keyboard.setOptions({

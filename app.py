@@ -68,9 +68,19 @@ class RemoteControl(WebSocketEndpoint):
 
     async def on_receive(self, websocket, data):
         try:
-            page, item_index = data.split(',')
-            command = config['pages'][page][int(item_index)]['command']
-            ws_commands[command[0]](command[1:])
+            raw_command = data.split(',')
+            page = raw_command[0]
+            item_index = int(raw_command[1])
+            item_config = config['pages'][page][item_index]
+
+            if item_config.get('keyboard', False):
+                command = 'k'
+                args = raw_command[2]
+            else:
+                command = item_config['command'][0]
+                args = item_config['command'][1:]
+
+            ws_commands[command](args)
         except (KeyError, IndexError, ValueError) as e:
             await websocket.send_text(f'Invalid command: {str(e)}')
         except CommandError as e:

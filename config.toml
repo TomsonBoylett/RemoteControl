@@ -31,7 +31,14 @@ href = "/page/NextPVR"
 text = "Shutdown"
 command = "lshutdown.exe /s"
 column = 4
-row = 8
+row = 1
+
+[[pages.Main]]
+keyboard = true
+column = 1
+row = 6
+column_span = 4
+row_span = 3
 
 [[pages.NextPVR]]
 text = "Back"

@@ -15,8 +15,16 @@ import uvicorn
 import pyautogui
 import toml
 
-LOGGER = logging.getLogger(__name__)
-LOGGER.setLevel(logging.DEBUG)
+root_logger = logging.getLogger()
+root_logger.setLevel(logging.INFO)
+log_handler = logging.handlers.RotatingFileHandler('app.log', maxBytes=1024 * 1024, backupCount=2)
+log_handler.setLevel(logging.DEBUG)
+log_formatter = logging.Formatter('[%(asctime)s]    %(name)s    %(levelname)s   %(message)s')
+log_handler.setFormatter(log_formatter)
+root_logger.addHandler(log_handler)
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -49,12 +57,13 @@ def press_hotkey(keys):
 
     pyautogui.hotkey(*keys)
     
-    LOGGER.debug(f'Executed Hotkey: {keys}')
+    logger.debug(f'Executed Hotkey: {keys}')
 
 def launch_program(program):
     try:
         args = shlex.split(program)
         subprocess.Popen(args)
+        logger.debug(f'Launched program: {args}')
     except KeyError as e:
         raise CommandError(f'Invalid program {str(e)}')
 

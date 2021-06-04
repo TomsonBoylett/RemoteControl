@@ -4,6 +4,7 @@ import sys
 import shlex
 import subprocess
 import os
+import csv
 
 from starlette.applications import Starlette
 from starlette.endpoints import WebSocketEndpoint
@@ -40,7 +41,7 @@ config = toml.load('config.toml')
 
 templates = Jinja2Templates(directory=resource_path('templates'))
 key_pattern = '|'.join(re.escape(k) for k in pyautogui.KEY_NAMES)
-key_pattern = re.compile(r'{(' + key_pattern + r')}|[ -~]', re.IGNORECASE)
+key_pattern = re.compile(r'{(' + key_pattern + r')}|([ -~])', re.IGNORECASE)
 
 class CommandError(Exception):
     pass
@@ -52,8 +53,7 @@ def press_hotkey(keys):
     if sum(t.end() - t.start() for t in tokens) != len(keys):
         raise CommandError(f'Invalid hotkey: {keys}')
 
-    tokens = [t.group() for t in tokens]
-    keys = [t[1:-1] if t[0] == '{' else t for t in tokens]
+    keys = [t.group(1) if t.group(1) else t.group(2) for t in tokens]
 
     pyautogui.hotkey(*keys)
     
@@ -77,7 +77,7 @@ class RemoteControl(WebSocketEndpoint):
 
     async def on_receive(self, websocket, data):
         try:
-            raw_command = data.split(',')
+            raw_command = next(csv.reader([data]))
             page = raw_command[0]
             item_index = int(raw_command[1])
             item_config = config['pages'][page][item_index]

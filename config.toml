@@ -12,16 +12,16 @@ rows = 8
 # The command field is used to execute an action on the server
 
 # Available Commands:
-
-# l#path_to_executable_with_optional_args#
-# Launches a program. " and \ must be escaped
-
-# k#keys_to_press#
-# Simulates pressing a single key or a hotkey
+#
+# launch path_to_executable arg1 arg2...
+# Runs a program with optional arguments
+#
+# hotkey keys
+# Presses a single key or a hotkey
 # To send special keys, surround them with {}
-# Eg ka presses the a key
-# Eg k{enter} presses the enter key
-# Eg k{ctrl}c presses CTRL + C 
+# ["hotkey", "a"] presses the a key
+# ["hotkey", "{enter}"] presses the enter key
+# ["hotkey", "{ctrl}c"] presses CTRL + C 
 
 [[pages.Main]]
 text = "NextPVR"
@@ -29,7 +29,7 @@ href = "/page/NextPVR"
 
 [[pages.Main]]
 text = "Shutdown"
-command = "lshutdown.exe /s"
+command = ["launch", "shutdown.exe",  "/s"]
 column = 4
 row = 1
 
@@ -46,62 +46,62 @@ href = "/"
 
 [[pages.NextPVR]]
 text = "Launch NextPVR"
-command = "l\"C:\\Program Files\\NextPVR\\client\\NextPVR.exe\""
+command = ["launch", "C:\\Program Files\\NextPVR\\client\\NextPVR.exe"]
 
 [[pages.NextPVR]]
 text = "Recordings"
-command = "k{f8}"
+command = ["hotkey", "{f8}"]
 
 [[pages.NextPVR]]
 text = "Esc"
-command = "k{esc}"
+command = ["hotkey", "{esc}"]
 column = 2
 row = 6
 
 [[pages.NextPVR]]
 text = "Up"
-command = "k{up}"
+command = ["hotkey", "{up}"]
 column = 3
 row = 6
 
 [[pages.NextPVR]]
 text = "Subtitles"
-command = "kx"
+command = ["hotkey", "x"]
 column = 4
 row = 6
 
 [[pages.NextPVR]]
 text = "Left"
-command = "k{left}"
+command = ["hotkey", "{left}"]
 column = 2
 row = 7
 
 [[pages.NextPVR]]
 text = "Enter"
-command = "k{enter}"
+command = ["hotkey", "{enter}"]
 column = 3
 row = 7
 
 [[pages.NextPVR]]
 text = "Right"
-command = "k{right}"
+command = ["hotkey", "{right}"]
 column = 4
 row = 7
 
 [[pages.NextPVR]]
 text = "Guide"
-command = "k{f1}"
+command = ["hotkey", "{f1}"]
 column = 2
 row = 8
 
 [[pages.NextPVR]]
 text = "Down"
-command = "k{down}"
+command = ["hotkey", "{down}"]
 column = 3
 row = 8
 
 [[pages.NextPVR]]
 text = "Play/Pause"
-command = "k{playpause}"
+command = ["hotkey", "{playpause}"]
 column = 4
 row = 8

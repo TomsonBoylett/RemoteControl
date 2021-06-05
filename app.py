@@ -1,7 +1,6 @@
 import re
 import logging
 import sys
-import shlex
 import subprocess
 import os
 import csv
@@ -59,17 +58,16 @@ def press_hotkey(keys):
     
     logger.debug(f'Executed Hotkey: {keys}')
 
-def launch_program(program):
+def launch_program(*args):
     try:
-        args = shlex.split(program)
         subprocess.Popen(args)
         logger.debug(f'Launched program: {args}')
     except KeyError as e:
         raise CommandError(f'Invalid program {str(e)}')
 
 ws_commands = {
-    'k': press_hotkey,
-    'l': launch_program
+    'hotkey': press_hotkey,
+    'launch': launch_program
 }
 
 class RemoteControl(WebSocketEndpoint):
@@ -77,19 +75,20 @@ class RemoteControl(WebSocketEndpoint):
 
     async def on_receive(self, websocket, data):
         try:
+            logger.debug(f'Received data from websocket: {data}')
             raw_command = next(csv.reader([data]))
             page = raw_command[0]
             item_index = int(raw_command[1])
             item_config = config['pages'][page][item_index]
 
             if item_config.get('keyboard', False):
-                command = 'k'
-                args = raw_command[2]
+                command = 'hotkey'
+                args = raw_command[2:]
             else:
                 command = item_config['command'][0]
                 args = item_config['command'][1:]
 
-            ws_commands[command](args)
+            ws_commands[command](*args)
         except (KeyError, IndexError, ValueError) as e:
             await websocket.send_text(f'Invalid command: {str(e)}')
         except CommandError as e:

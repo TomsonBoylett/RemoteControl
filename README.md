@@ -1,0 +1,1 @@
+Remote control icon by Vectors Market https://thenounproject.com/vectorsmarket/

@@ -4,6 +4,8 @@ import sys
 import subprocess
 import os
 import csv
+import threading
+import pystray
 
 from starlette.applications import Starlette
 from starlette.endpoints import WebSocketEndpoint
@@ -14,6 +16,7 @@ from starlette.staticfiles import StaticFiles
 import uvicorn
 import pyautogui
 import toml
+import PIL
 
 root_logger = logging.getLogger()
 root_logger.setLevel(logging.INFO)
@@ -123,6 +126,15 @@ app = Starlette(debug=True, routes=[
     WebSocketRoute('/ws', RemoteControl)
 ])
 
-if __name__ == "__main__":
-    logging.basicConfig(stream=sys.stdout)
-    uvicorn.run(app, host=config['bind_address'], port=config['port'])
+logging.basicConfig(stream=sys.stdout)
+t = threading.Thread(target=uvicorn.run, args=(app,), kwargs={'host': config['bind_address'], 'port': config['port']}, daemon=True)
+t.start()
+
+icon = pystray.Icon('Remote Control')
+with PIL.Image.open(resource_path("icon/icon-128.ico")) as im:
+    im.load()
+    icon.icon = im
+icon.menu = pystray.Menu(
+    pystray.MenuItem('Exit', lambda icon: icon.stop())
+)
+icon.run()

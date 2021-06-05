@@ -24,17 +24,18 @@ exe = EXE(pyz,
           a.zipfiles,
           a.datas,
           [],
-          name='app',
+          name='remote-control',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=True )
+          console=False,
+          icon='icon/icon-128.ico')
 coll = COLLECT(exe,
                [('config.toml', 'config.toml', 'DATA')],
                strip=False,
                upx=True,
                upx_exclude=[],
-               name='app')
+               name='remote-control')

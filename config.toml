@@ -5,6 +5,10 @@ port = 8000
 columns = 4
 rows = 8
 
+ssl_enabled = false
+ssl_keyfile = 'dev.key'
+ssl_certfile = 'dev.cert'
+
 # This section defines the buttons to display on each page
 # All buttons must have a text field
 # Buttons can have either an href field or a command field

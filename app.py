@@ -5,7 +5,6 @@ import subprocess
 import os
 import csv
 import threading
-import pystray
 
 from starlette.applications import Starlette
 from starlette.endpoints import WebSocketEndpoint
@@ -17,6 +16,7 @@ import uvicorn
 import pyautogui
 import toml
 import PIL
+import pystray
 
 root_logger = logging.getLogger()
 root_logger.setLevel(logging.INFO)
@@ -127,7 +127,19 @@ app = Starlette(debug=True, routes=[
 ])
 
 logging.basicConfig(stream=sys.stdout)
-t = threading.Thread(target=uvicorn.run, args=(app,), kwargs={'host': config['bind_address'], 'port': config['port']}, daemon=True)
+uvi_args = {
+    'host': config['bind_address'],
+    'port': config['port'],
+}
+if config['ssl_enabled']:
+    uvi_args.update({
+        'ssl_keyfile': config['ssl_keyfile'],
+        'ssl_certfile': config['ssl_certfile']
+    })
+t = threading.Thread(target=uvicorn.run,
+                     args=(app,),
+                     kwargs=uvi_args,
+                     daemon=True)
 t.start()
 
 icon = pystray.Icon('Remote Control')

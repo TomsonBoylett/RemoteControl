@@ -5,6 +5,8 @@ import subprocess
 import os
 import csv
 import threading
+import base64
+import binascii
 
 from starlette.applications import Starlette
 from starlette.endpoints import WebSocketEndpoint
@@ -12,11 +14,19 @@ from starlette.responses import PlainTextResponse
 from starlette.routing import Route, WebSocketRoute, Mount
 from starlette.templating import Jinja2Templates
 from starlette.staticfiles import StaticFiles
+from starlette.middleware import Middleware
+from starlette.middleware.authentication import AuthenticationMiddleware
+from starlette.authentication import (
+    AuthenticationBackend, AuthenticationError, SimpleUser, UnauthenticatedUser,
+    AuthCredentials, requires
+)
 import uvicorn
 import pyautogui
 import toml
 import PIL
 import pystray
+
+pyautogui.FAILSAFE = False
 
 root_logger = logging.getLogger()
 root_logger.setLevel(logging.INFO)
@@ -97,6 +107,7 @@ class RemoteControl(WebSocketEndpoint):
         except CommandError as e:
             await websocket.send_text(str(e))
 
+@requires('authenticated')
 async def homepage(request):
     page = request.path_params.get('page', 'Main')
 
@@ -111,6 +122,7 @@ async def homepage(request):
         'request': request
     })
 
+@requires('authenticated')
 async def css(request):
     return templates.TemplateResponse('main.css.jinja', media_type='text/css', context={
         'columns': config['columns'],
@@ -118,13 +130,41 @@ async def css(request):
         'request': request
     })
 
-app = Starlette(debug=True, routes=[
-    Route('/', homepage),
-    Route('/page/{page}', homepage),
-    Route('/main.css', css),
-    Mount('/static', app=StaticFiles(directory=resource_path('static')), name='static'),
-    WebSocketRoute('/ws', RemoteControl)
-])
+class BasicAuthBackend(AuthenticationBackend):
+    async def authenticate(self, request):
+        if "Authorization" not in request.headers:
+            raise AuthenticationError('No basic auth credentials provided')
+
+        auth = request.headers["Authorization"]
+        try:
+            scheme, credentials = auth.split()
+            if scheme.lower() != 'basic':
+                return
+            decoded = base64.b64decode(credentials).decode("ascii")
+        except (ValueError, UnicodeDecodeError, binascii.Error) as exc:
+            raise AuthenticationError('Invalid basic auth credentials')
+
+        username, _, password = decoded.partition(":")
+        if config['username'] != username or config['password'] != password:
+            raise AuthenticationError('Invalid username and password')
+        return AuthCredentials(["authenticated"]), SimpleUser(username)
+
+def on_auth_error(request, exc):
+    return PlainTextResponse('Unauthorized', 401, headers={
+        'WWW-Authenticate': 'Basic'
+    })
+
+app = Starlette(debug=True,
+                routes=[
+                    Route('/', homepage),
+                    Route('/page/{page}', homepage),
+                    Route('/main.css', css),
+                    Mount('/static', app=StaticFiles(directory=resource_path('static')), name='static'),
+                    WebSocketRoute('/ws', RemoteControl),
+                ],
+                middleware=[
+                    Middleware(AuthenticationMiddleware, backend=BasicAuthBackend(), on_error=on_auth_error)
+                ])
 
 logging.basicConfig(stream=sys.stdout)
 uvi_args = {

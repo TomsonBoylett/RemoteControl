@@ -1,4 +1,4 @@
-bind_address = "0.0.0.0"
+bind_address = "127.0.0.1"
 port = 8000
 
 # How many slots to show on each page
@@ -8,6 +8,11 @@ rows = 8
 ssl_enabled = false
 ssl_keyfile = 'dev.key'
 ssl_certfile = 'dev.cert'
+
+# Only enable if using ssl with a trusted certificate
+auth_enabled = false
+username = 'admin'
+password = 'password'
 
 # This section defines the buttons to display on each page
 # All buttons must have a text field

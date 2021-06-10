@@ -8,7 +8,7 @@ TODO
 Python 3.8+ required
 ```
 pip install -r requirements.txt
-python app.py
+python main.py
 ```
 
 ## Credits

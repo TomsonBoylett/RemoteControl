@@ -4,10 +4,10 @@ from PyInstaller.utils.hooks import collect_submodules
 block_cipher = None
 
 
-a = Analysis(['app.py'],
+a = Analysis(['main.py'],
              pathex=['E:\\RemoteControl'],
              binaries=[],
-             datas=[('static', 'static'), ('templates', 'templates')],
+             datas=[('static', 'static'), ('templates', 'templates'), ('icon/icon-128.ico', 'icon')],
              hiddenimports=collect_submodules('uvicorn') + collect_submodules('websockets'),
              hookspath=[],
              runtime_hooks=[],

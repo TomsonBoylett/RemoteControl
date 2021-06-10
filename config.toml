@@ -14,11 +14,20 @@ auth_enabled = false
 username = 'admin'
 password = 'password'
 
-# This section defines the buttons to display on each page
+# The section below defines the buttons to display on each page
+#
 # All buttons must have a text field
-# Buttons can have either an href field or a command field
-# The href field is used to link to another page
-# The command field is used to execute an action on the server
+#
+# If the button contains the keyboard attribute set to true,
+# a virtual keyboard will be shown in this slot. Be sure to
+# set column_span and row_span to ensure to keyboard has
+# enough space to be displayed.
+#
+# If the button has an href field it will act a link. This
+# allows you to navigate between pages.
+#
+# If the button has a command field it will be executed
+# when the button is clicked. See available commands below.
 
 # Available Commands:
 #
@@ -30,7 +39,7 @@ password = 'password'
 # To send special keys, surround them with {}
 # ["hotkey", "a"] presses the a key
 # ["hotkey", "{enter}"] presses the enter key
-# ["hotkey", "{ctrl}c"] presses CTRL + C 
+# ["hotkey", "{ctrl}c"] presses CTRL + C
 
 [[pages.Main]]
 text = "NextPVR"
